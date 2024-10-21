@@ -1,7 +1,3 @@
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import os
 import re
 import sys
@@ -58,7 +54,7 @@ async def upload(bot: Client, m: Message):
     try:
         with open(x, "r") as f:
             content = f.read()
-        links = [line.split("://", 1) for line in content.split("\n")]
+        links = [line.split("://", 1) for line in content.split("\n") if line]
         os.remove(x)
     except Exception:
         await m.reply_text("**Invalid file input.**")
@@ -100,7 +96,7 @@ async def upload(bot: Client, m: Message):
     caption_suffix = highlighter if caption == 'Robin' else caption
 
     await editable.edit("Now send the Thumbnail URL\nOr if you don't want a thumbnail, send 'no'")
-    input6 = message = await bot.listen(editable.chat.id)
+    input6: Message = await bot.listen(editable.chat.id)
     thumb_url = input6.text
     await input6.delete(True)
 
@@ -122,16 +118,26 @@ async def upload(bot: Client, m: Message):
                 async with ClientSession() as session:
                     async with session.get(url, headers={'User-Agent': 'Mozilla/5.0'}) as resp:
                         text = await resp.text()
-                        url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
+                        url_match = re.search(r"(https://.*?playlist.m3u8.*?)\"", text)
+                        if url_match:
+                            url = url_match.group(1)
 
             elif 'videos.classplusapp' in url:
                 url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'YOUR_TOKEN'}).json()['url']
 
             elif ("tencdn.classplusapp" in url or "classplusapp.com" in url or "media-cdn" in url) and ".m3u8" in url:
-               headers = {'Host': 'api.classplusapp.com', 'x-access-token': 'eyJjb3Vyc2VJZCI6IjQ1NjY4NyIsInR1dG9ySWQiOm51bGwsIm9yZ0lkIjo0ODA2MTksImNhdGVnb3J5SWQiOm51bGx9', 'user-agent': 'Mobile-Android', 'app-version': '1.4.37.1', 'api-version': '18', 'device-id': '5d0d17ac8b3c9f51', 'device-details': '2848b866799971ca_2848b8667a33216c_SDK-30', 'accept-encoding': 'gzip'}
-             params = (('url', f'{url}'),)
-             url = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params=params).json()['url']
-                url = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params={'url': url}).json()['url']
+                headers = {
+                    'Host': 'api.classplusapp.com',
+                    'x-access-token': 'YOUR_ACCESS_TOKEN',  # Replace with your actual access token
+                    'user-agent': 'Mobile-Android',
+                    'app-version': '1.4.37.1',
+                    'api-version': '18',
+                    'device-id': '5d0d17ac8b3c9f51',
+                    'device-details': '2848b866799971ca_2848b8667a33216c_SDK-30',
+                    'accept-encoding': 'gzip'
+                }
+                params = {'url': url}
+                url = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params=params).json()['url']
 
             elif '/master.mpd' in url:
                 id = url.split("/")[-2]
@@ -152,8 +158,8 @@ async def upload(bot: Client, m: Message):
 
             try:
                 # Download logic
-                cc = f'**[📽️] Vid_ID:** {str(count).zfill(3)}.** {name1}{caption_suffix}.mkv\n**𝔹ᴀᴛᴄʜ** » **{batch_name}**'
-                cc1 = f'**[📁] Pdf_ID:** {str(count).zfill(3)}. {name1}{caption_suffix}.pdf \n**𝔹ᴀᴛᴄʜ** » **{batch_name}**'
+                cc = f"**[📽️] Vid_ID:** {str(count).zfill(3)}.** {name1}{caption_suffix}.mkv\n**𝔹ᴀᴛᴄʜ** » **{batch_name}**"
+                cc1 = f"**[📁] Pdf_ID:** {str(count).zfill(3)}. {name1}{caption_suffix}.pdf \n**𝔹ᴀᴛᴄʜ** » **{batch_name}**"
 
                 if "drive" in url:
                     ka = await helper.download(url, name)
@@ -167,22 +173,28 @@ async def upload(bot: Client, m: Message):
                     copy = await bot.send_document(chat_id=m.chat.id, document=f'{name}.pdf', caption=cc1)
                     count += 1
                     os.remove(f'{name}.pdf')
+                    time.sleep(1)
                 else:
-                    await bot.send_message(m.chat.id, f"**⥥ 🄳🄾🅆🄽🄻🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}`")
-                    os.system(cmd)
-                    await bot.send_document(chat_id=m.chat.id, document=f"{name}.mp4", caption=cc)
-                    os.remove(f"{name}.mp4")
-                    count += 1
-                    await editable.edit(f"**✅ {name} uploaded!**\n\n**Count:** {count}/{len(links)}")
-            except Exception as e:
-                await editable.edit(f"**Error occurred: {str(e)}.**")
+                    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    while True:
+                        output = process.stdout.readline()
+                        if process.poll() is not None and output == b"":
+                            break
+                        if output:
+                            await editable.edit(f"{output.decode().strip()}")
+                    copy = await bot.send_document(chat_id=m.chat.id, document=f'{name}.mp4', caption=cc)
 
-        await editable.edit("**All Downloads Completed! 🎉**")
+                await editable.edit(f"**Uploaded {str(count).zfill(3)} - {name}**")
+                count += 1
+
+            except Exception as e:
+                await editable.edit(f"Error occurred while processing {name}: {e}")
+                continue
+
     except Exception as e:
-        await editable.edit(f"**Error occurred: {str(e)}.**")
-    finally:
-        if os.path.exists('thumb.jpg'):
-            os.remove('thumb.jpg')
+        await editable.edit(f"**An error occurred:** {e}")
+
+    await editable.edit("All files have been processed and uploaded.")
 
 if __name__ == "__main__":
     bot.run()
