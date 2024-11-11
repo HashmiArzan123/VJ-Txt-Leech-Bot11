@@ -1,7 +1,3 @@
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import os
 import time
 import datetime
@@ -18,6 +14,8 @@ from utils import progress_bar
 
 from pyrogram import Client, filters
 from pyrogram.types import Message
+
+
 
 def duration(filename):
     result = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
@@ -195,10 +193,9 @@ async def send_doc(bot: Client, m: Message,cc,ka,cc1,prog,count,name):
 
 
 async def send_vid(bot: Client, m: Message,cc,filename,thumb,name,prog):
-    
-    subprocess.run(f'ffmpeg -i "{filename}" -ss 00:00:12 -vframes 1 "{filename}.jpg"', shell=True)
+    subprocess.run(f'ffmpeg -i "{filename}" -ss 00:01:00 -vframes 1 "{filename}.jpg"', shell=True)
     await prog.delete (True)
-    reply = await m.reply_text(f"**Uploading ...** - `{name}`")
+    reply = await m.reply_text(f"**⥣ Uploading ...** » `{name}`")
     try:
         if thumb == "no":
             thumbnail = f"{filename}.jpg"
@@ -215,8 +212,6 @@ async def send_vid(bot: Client, m: Message,cc,filename,thumb,name,prog):
         await m.reply_video(filename,caption=cc, supports_streaming=True,height=720,width=1280,thumb=thumbnail,duration=dur, progress=progress_bar,progress_args=(reply,start_time))
     except Exception:
         await m.reply_document(filename,caption=cc, progress=progress_bar,progress_args=(reply,start_time))
-
-    
     os.remove(filename)
 
     os.remove(f"{filename}.jpg")
