@@ -65,7 +65,7 @@ async def upload(bot: Client, m: Message):
         os.remove(x)
         return
 
-    await editable.edit(f"**𝕋ᴏᴛᴀʟ ʟɪɴᴇ𝕤 ғᴏᴜɴᴅ ᴀʀᴇ🔗🔗** **{len(links)}**\n\n**𝕊ᴇɴᴅ 𝔽ʀᴏᴍ ᴡʜᴇʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ɪɴɪᴛɪᴀʟ ɪ𝕤** **1**")
+    await editable.edit(f"**𝕋ᴏᴛᴀʟ ʟɪɴᴇ𝕤 ғᴏᴜɴᴅ ᴀʀᴇ🔗🔗** **{len(links)}**\n\n**𝕊ᴇɴᴅ 𝔽ʀᴏᴍ ᴡʜᴇʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴏ ᴅᴏᴡɴʟᴏᴀᴅ ɪɴɪᴛɪᴀʟ ɪ𝕤** **1**")
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
@@ -103,12 +103,9 @@ async def upload(bot: Client, m: Message):
     raw_text3 = input3.text
     await input3.delete(True)
     highlighter = f"️ ⁪⁬⁮⁮⁮"
-    if raw_text3 == 'Robin':
-        MR = highlighter
-    else:
-        MR = raw_text3
+    MR = highlighter if raw_text3 == 'Robin' else raw_text3
 
-    await editable.edit("Now send the Thumb url/nEg » https://graph.org/file/ce1723991756e48c35aa1.jpg \n Or if don't want thumbnail send = no")
+    await editable.edit("Now send the Thumb URL or type 'no' if you don't want a thumbnail: \nExample: https://graph.org/file/ce1723991756e48c35aa1.jpg")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -121,11 +118,7 @@ async def upload(bot: Client, m: Message):
     else:
         thumb = "no"
 
-    if len(links) == 1:
-        count = 1
-    else:
-        count = int(raw_text)
-
+    count = 1 if len(links) == 1 else int(raw_text)
     try:
         for i in range(count - 1, len(links)):
             V = links[i][1].replace("file/d/", "uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing", "")
@@ -155,11 +148,11 @@ async def upload(bot: Client, m: Message):
             elif 'videos.classplusapp' in url:
                 url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={
                     'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6ODE5NjU4MzAsIm9yZ0lkIjoxNDA2NywidHlwZSI6MSwibW9iaWxlIjoiOTE4ODA4MDU0MTM0IiwibmFtZSI6Ik1vaGl0IEdvc3dhbWkiLCJlbWFpbCI6bnVsbCwiaXNJbnRlcm5hdGlvbmFsIjowLCJkZWZhdWx0TGFuZ3VhZ2UiOiJFTiIsImNvdW50cnlDb2RlIjoiSU4iLCJjb3VudHJ5SVNPIjoiOTEiLCJ0aW1lem9uZSI6IkdNVCs1OjMwIiwiaXNEaXkiOnRydWUsIm9yZ0NvZGUiOiJ2Y3V2YyIsImlzRGl5U3ViYWRtaW4iOjAsImZpbmdlcnByaW50SWQiOiIyYjMwMWMzNGI4OTFmYmEyYTVjZjJiNjI0MDc2NWE0MiIsImlhdCI6MTczMTA0MjE1OSwiZXhwIjoxNzMxNjQ2OTU5fQ.oEEZqEjvjURzMTEUfesWDdmSZi55j2NaCqCYOdmpNvQmA-a1az5ebOZXyVqHfRZC'
-                })
+                }).json()['url']
 
-            elif "tencdn.classplusapp" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or " media-cdn.classplusapp" in url:
+            elif "tencdn.classplusapp" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or "media-cdn.classplusapp" in url:
                 headers = {
-                    'Host': 'api.classplusapp.com',
+                    'Host': 'api.classplus.com',
                     'x-access-token': 'eyJjb3Vyc2VJZCI6IjQ1NjY4NyIsInR1dG9ySWQiOm51bGwsIm9yZ0lkIjo0ODA2MTksImNhdGVnb3J5SWQiOm51bGx9',
                     'user-agent': 'Mobile-Android',
                     'app-version': '1.4.37.1',
@@ -200,8 +193,8 @@ async def upload(bot: Client, m: Message):
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
-                cc = f'**[📽️] Vid_ID:** {str(count).zfill(3)}.** {name1}{MR}.mkv\n**𝔹ᴀᴛᴄʜ** » **{raw_text0}**'
-                cc1 = f'**[📁] Pdf_ID:** {str(count).zfill(3)}. {name1}{MR}.pdf \n**𝔹ᴀᴛᴄʜ** » **{raw_text0}**'
+                cc = f'** {str(count).zfill(3)}. **{name} {res} ➸ᴹᴿ°ɧąƈƙɛཞ ™࿐ 🐟.mkv\n\n**Batch Name : **{raw_text0}\n\n**Extracted  By ➤ {raw_text3}\n\n**'
+                cc1 = f'** {str(count).zfill(3)}. **{name} ➸ᴹᴿ°ɧąƈƙɛཞ ™࿐ ⚡.pdf\n\n**Batch Name : **{raw_text0}\n\n**Extracted  By ➤ {raw_text3}\n\n**'
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -227,7 +220,8 @@ async def upload(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥ 🄳🄾🅆🄽🄻 ```python\n**🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}`\n❄Quality » {raw_text2}`\n\n**🔗URL »** `{url}`"
+                    Show = f"**⥥ Downloading »**\n\n**Name »** `{name}\nQuality » {raw_text2}` \n\n**Bot By ➤ **ɧąƈƙɛཞ ™ [🇮🇳]"
+
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -238,13 +232,13 @@ async def upload(bot: Client, m: Message):
 
             except Exception as e:
                 await m.reply_text(
-                    f"**downloading Interrupted **\n{str(e)}\n**Name** » {name}\n**Link** » `{url}`"
+                    f"**downloading Interrupted **\n{str(e)}\n**Name** » {name}\n**Link** » {url}"
                 )
                 continue
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("**𝔻ᴏɴᴇ 𝔹ᴏ𝕤𝕤😎**")
+    await m.reply_text("🔰Done🔰")
 
 
 bot.run()
